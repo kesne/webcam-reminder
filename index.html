@@ -1,0 +1,90 @@
+<html>
+  <link
+    href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+  <title>Webcam Reminder</title>
+  <style></style>
+  <body
+    class="font-sans m-1 p-4 rounded-lg bg-indigo-500 border-2 border-indigo-200"
+  >
+    <h1 class="text-indigo-100 text-center text-3xl font-bold my-6">
+      Webcam Reminder
+    </h1>
+
+    <form id="form">
+      <div class="space-y-2 w-48 mx-auto">
+        <label class="flex space-x-4 items-ceter font-bold text-indigo-200">
+          <span class="flex-1">Height</span>
+          <input
+            type="number"
+            min="0"
+            name="height"
+            id="input-height"
+            class="bg-indigo-300 focus:bg-white transition w-16 px-2 py-0.5 text-indigo-900 focus:outline-none shadow-sm focus:ring focus:ring-indigo-300 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md"
+          />
+        </label>
+        <label class="flex space-x-2 items-ceter font-bold text-indigo-200">
+          <span class="flex-1">Width</span>
+          <input
+            type="number"
+            min="0"
+            name="width"
+            id="input-width"
+            class="bg-indigo-300 focus:bg-white transition w-16 px-2 py-0.5 text-indigo-900 focus:outline-none shadow-sm focus:ring focus:ring-indigo-300 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md"
+          />
+        </label>
+        <label class="flex space-x-2 items-ceter font-bold text-indigo-200">
+          <span class="flex-1">X</span>
+          <input
+            type="number"
+            min="0"
+            name="x"
+            id="input-x"
+            class="bg-indigo-300 focus:bg-white transition w-16 px-2 py-0.5 text-indigo-900 focus:outline-none shadow-sm focus:ring focus:ring-indigo-300 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md"
+          />
+        </label>
+        <label class="flex space-x-2 items-ceter font-bold text-indigo-200">
+          <span class="flex-1">Y</span>
+          <input
+            type="number"
+            min="0"
+            name="y"
+            id="input-y"
+            class="bg-indigo-300 focus:bg-white transition w-16 px-2 py-0.5 text-indigo-900 focus:outline-none shadow-sm focus:ring focus:ring-indigo-300 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md"
+          />
+        </label>
+
+        <button
+          type="submit"
+          class="mx-auto block items-center px-4 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-indigo-300 transition hover:bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+
+    <script type="module">
+      const { ipcRenderer } = require("electron");
+
+      ipcRenderer.invoke("getPosition").then((result) => {
+        document.getElementById("input-x").value = String(result.x);
+        document.getElementById("input-y").value = String(result.y);
+        document.getElementById("input-width").value = String(result.width);
+        document.getElementById("input-height").value = String(result.height);
+      });
+
+      document.getElementById("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const position = Object.fromEntries(
+          [...formData.entries()].map(([key, value]) => [
+            key,
+            parseInt(value, 10),
+          ])
+        );
+        ipcRenderer.send("position", position);
+      });
+    </script>
+  </body>
+</html>

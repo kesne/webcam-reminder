@@ -1,0 +1,10 @@
+{
+  "name": "webcam-reminder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^12.0.2",
+    "electron-store": "^7.0.2"
+  }
+}
